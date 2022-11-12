@@ -4,8 +4,9 @@ import UnauthorizedError from '../errors/UnauthorizedError';
 
 import UserModel from '../models/user.model';
 import { ICredential } from '../interfaces/IUser';
+import { IDecodedUser } from '../interfaces/services/IUserService';
 import loginValidation from './utilities/login.validation';
-import { generateToken } from '../auth/jwt.auth';
+import { generateToken, verifyToken } from '../auth/jwt.auth';
 
 export default class UserService {
   private _model: UserModel;
@@ -26,5 +27,14 @@ export default class UserService {
 
     const token = generateToken(foundUser);
     return token;
+  }
+
+  public async validate(token: string) {
+    const decodedUser = verifyToken(token);
+    const { email } = decodedUser as IDecodedUser;
+    const foundUser = await this._model.findOne(email);
+    if (!foundUser) throw new UnauthorizedError('Invalid token');
+
+    return foundUser?.role;
   }
 }
