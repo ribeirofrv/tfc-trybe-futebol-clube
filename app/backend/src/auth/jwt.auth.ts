@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import * as jwt from 'jsonwebtoken';
 import UnauthorizedError from '../errors/UnauthorizedError';
 
@@ -24,6 +25,6 @@ export const generateToken = (user: IPayload): string => {
 
 export const verifyToken = (token: string) => {
   const result = jwt.verify(token, SECRET_KEY);
-  if (!result) throw new UnauthorizedError('Unauthorized');
+  if (!result) throw new UnauthorizedError('Token must be a valid token');
   return result;
 };
