@@ -12,4 +12,10 @@ export default class UserController {
     const token = await this.userService.login(request.body);
     return response.status(200).json({ token });
   }
+
+  async validate(request: Request, response: Response): Promise<Response | void> {
+    const { authorization } = request.headers;
+    const role = await this.userService.validate(authorization as string);
+    return response.status(200).json({ role });
+  }
 }
