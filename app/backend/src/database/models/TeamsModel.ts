@@ -20,6 +20,7 @@ Teams.init({
   },
 }, {
   sequelize: db,
+  tableName: 'teams',
   modelName: 'Teams',
   timestamps: false,
 });
