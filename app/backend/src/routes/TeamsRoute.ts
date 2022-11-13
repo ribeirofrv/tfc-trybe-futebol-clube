@@ -8,6 +8,7 @@ const teamsController = new TeamsController(teamsService as ITeamsService);
 const teamsRouter = Router();
 
 teamsRouter
-  .get('/teams', (req, res) => teamsController.findAll(req, res));
+  .get('/teams', (req, res) => teamsController.findAll(req, res))
+  .get('/teams/:id', (req, res) => teamsController.findOne(req, res));
 
 export default teamsRouter;
