@@ -1,5 +1,5 @@
 import NotFoundError from '../errors/NotFoundError';
-import ITeamDTO from '../interfaces/ITeam';
+import ITeamDTO from '../interfaces/dtos/ITeamDTO';
 import TeamsModel from '../models/teams.model';
 
 export default class TeamsService {
