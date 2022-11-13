@@ -34,4 +34,23 @@ describe('Testes para a rota /teams', function () {
       sinon.restore();
     });
   });
+
+  describe('GET /teams/:id', function () {
+    it('Retorna um time específico identificado pelo id', async function () {
+      const team = {
+        id: 1,
+        teamName: 'Corinthians',
+      };
+      sinon.stub(Model, 'findOne').resolves(team as Teams);
+
+      const httpResponse = await chai.request(app).get('/teams/1');
+      expect(httpResponse.status).to.equal(200);
+      expect(httpResponse.body).to.be.a('object');
+      expect(httpResponse.body).to.have.property('id');
+      expect(httpResponse.body).to.have.property('teamName');
+      expect(httpResponse.body.id).to.equal(1);
+      expect(httpResponse.body.teamName).to.equal('Corinthians');
+      sinon.restore();
+    });
+  });
 });
