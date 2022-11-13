@@ -1,5 +1,5 @@
 import User from '../database/models/UserModel';
-import { IUserDTO } from '../interfaces/IUser';
+import { IUserDTO } from '../interfaces/dtos/IUserDTO';
 import { IUserModel } from '../interfaces/models/IUserModel';
 
 export default class UserModel implements IUserModel {

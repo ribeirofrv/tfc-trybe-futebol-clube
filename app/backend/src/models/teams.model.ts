@@ -1,5 +1,5 @@
 import ITeamsModel from '../interfaces/models/ITeamsModel';
-import ITeamDTO from '../interfaces/ITeam';
+import ITeamDTO from '../interfaces/dtos/ITeamDTO';
 import Teams from '../database/models/TeamsModel';
 
 export default class TeamsModel implements ITeamsModel {
