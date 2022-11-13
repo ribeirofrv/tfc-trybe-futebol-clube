@@ -6,7 +6,6 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import { Model } from 'sequelize';
 import Teams from '../database/models/TeamsModel';
-import TeamsService from '../services/teams.services';
 
 chai.use(chaiHttp);
 
@@ -50,6 +49,15 @@ describe('Testes para a rota /teams', function () {
       expect(httpResponse.body).to.have.property('teamName');
       expect(httpResponse.body.id).to.equal(1);
       expect(httpResponse.body.teamName).to.equal('Corinthians');
+      sinon.restore();
+    });
+
+    it('Retorna erro 404 quando o time não é encontrado', async function () {
+      sinon.stub(Model, 'findOne').resolves(null);
+
+      const httpResponse = await chai.request(app).get('/teams/1996');
+      expect(httpResponse.status).to.equal(404);
+      expect(httpResponse.body.message).to.equal('There is no team with such id!');
       sinon.restore();
     });
   });
