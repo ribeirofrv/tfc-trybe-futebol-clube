@@ -1,4 +1,4 @@
-import BadRequestError from '../errors/BadRequestError';
+import NotFoundError from '../errors/NotFoundError';
 import ITeamDTO from '../interfaces/ITeam';
 import TeamsModel from '../models/teams.model';
 
@@ -16,7 +16,7 @@ export default class TeamsService {
 
   public async findOne(id: number): Promise<ITeamDTO | null> {
     const team = await this._model.findOne(id);
-    if (!team) throw new BadRequestError('There is no team with such id!');
+    if (!team) throw new NotFoundError('There is no team with such id!');
     return team;
   }
 }
