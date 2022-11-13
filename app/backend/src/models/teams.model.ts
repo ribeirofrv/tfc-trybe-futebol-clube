@@ -13,4 +13,9 @@ export default class TeamsModel implements ITeamsModel {
     const allTeams = await this._model.findAll();
     return allTeams;
   }
+
+  async findOne(id: number): Promise<ITeamDTO | null> {
+    const team = await this._model.findOne({ where: { id } });
+    return team;
+  }
 }
