@@ -1,3 +1,4 @@
+import { IMatchCreate } from '../interfaces/IMatch';
 import IMatchesModel from '../interfaces/models/IMatchesModel';
 import IMatchesDTO from '../interfaces/dtos/IMatchDTO';
 import Matches from '../database/models/MatchesModel';
@@ -31,5 +32,10 @@ export default class MatchesModel implements IMatchesModel {
       },
     });
     return matches;
+  }
+
+  async create(match: IMatchCreate): Promise<IMatchesDTO | null> {
+    const newMatch = await this._model.create({ ...match, inProgress: true });
+    return newMatch;
   }
 }
