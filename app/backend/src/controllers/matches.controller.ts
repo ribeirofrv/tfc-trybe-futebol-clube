@@ -13,4 +13,10 @@ export default class MatchesController {
     const matches = await this.matchesService.findAllMatches(inProgress as string);
     response.status(200).json(matches);
   }
+
+  public async createMatch(request: Request, response: Response) {
+    const { body } = request;
+    const newMatch = await this.matchesService.createMatch(body);
+    response.status(201).json(newMatch);
+  }
 }
