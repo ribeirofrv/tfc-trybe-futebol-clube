@@ -1,3 +1,4 @@
+import { IMatchCreate } from '../interfaces/IMatch';
 import MatchesModel from '../models/matches.model';
 import IMatchesDTO from '../interfaces/dtos/IMatchDTO';
 
@@ -17,5 +18,10 @@ export default class MatchesService {
 
     const allMatches = await this._model.findAll();
     return allMatches;
+  }
+
+  public async createMatch(match: IMatchCreate): Promise<IMatchesDTO | null> {
+    const newMatch = await this._model.create(match);
+    return newMatch;
   }
 }
