@@ -19,4 +19,10 @@ export default class MatchesController {
     const newMatch = await this.matchesService.createMatch(body);
     response.status(201).json(newMatch);
   }
+
+  public async updateProgress(request: Request, response: Response) {
+    const { id } = request.params;
+    const updated = await this.matchesService.updateProgress(id);
+    response.status(200).json({ updated });
+  }
 }

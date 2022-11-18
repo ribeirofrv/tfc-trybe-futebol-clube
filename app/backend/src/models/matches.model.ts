@@ -38,4 +38,12 @@ export default class MatchesModel implements IMatchesModel {
     const newMatch = await this._model.create({ ...match, inProgress: true });
     return newMatch;
   }
+
+  async update(id: string): Promise<string> {
+    const updatedMatch = await this._model.update(
+      { inProgress: false },
+      { where: { id } },
+    );
+    return updatedMatch ? 'ok' : 'false';
+  }
 }

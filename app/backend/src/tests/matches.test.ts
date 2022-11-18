@@ -252,7 +252,7 @@ describe.only('Testes para a rota /matches', function () {
         .set('Authorization', `Bearer ${adminToken}`)
         .send(matchReq);
 
-      expect(httpResponse.status).to.equal(401);
+      expect(httpResponse.status).to.equal(404);
       expect(httpResponse.body).to.be.a('object');
       expect(httpResponse.body).to.have.property('message');
       expect(httpResponse.body.message).to.equal(

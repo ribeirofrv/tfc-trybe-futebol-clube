@@ -8,6 +8,9 @@ const matchesController = new MatchesController(matchesService);
 const matchesRouter = Router();
 
 matchesRouter
+  .patch('/matches/:id/finish', authentication, (req, res) => {
+    matchesController.updateProgress(req, res);
+  })
   .get('/matches', (req, res) => matchesController.findAllMatches(req, res))
   .post('/matches', authentication, (req, res) => {
     matchesController.createMatch(req, res);
