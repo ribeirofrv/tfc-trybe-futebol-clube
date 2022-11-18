@@ -1,7 +1,10 @@
-export interface IMatchCreate {
+export interface ITeamsToMatch {
   homeTeam: number;
-  homeTeamGoals: number;
   awayTeam: number;
+}
+
+export interface IMatchCreate extends ITeamsToMatch {
+  homeTeamGoals: number;
   awayTeamGoals: number;
 }
 

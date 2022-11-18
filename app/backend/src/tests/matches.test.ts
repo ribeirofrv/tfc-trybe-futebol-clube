@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Testes para a rota /matches', function () {
+describe.only('Testes para a rota /matches', function () {
   describe('GET /matches', function () {
     afterEach(() => sinon.restore());
 
@@ -177,26 +177,87 @@ describe('Testes para a rota /matches', function () {
       expect(httpResponse.body).to.have.property('inProgress');
     });
 
-    // it('Não permite criar um novo jogo sem token JWT', async function () {
-    //   const matchReq = {
-    //     homeTeam: 16,
-    //     awayTeam: 8,
-    //     homeTeamGoals: 2,
-    //     awayTeamGoals: 2,
-    //   };
+    it('Não permite criar um novo jogo sem token JWT', async function () {
+      const matchReq = {
+        homeTeam: 16,
+        awayTeam: 8,
+        homeTeamGoals: 2,
+        awayTeamGoals: 2,
+      };
 
-    //   const httpResponse = await chai
-    //     .request(app)
-    //     .post('/matches')
-    //     .set('Authorization', `Bearer`)
-    //     .send(matchReq);
+      const httpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .set('Authorization', `Bearer`)
+        .send(matchReq);
 
-    //   expect(httpResponse.status).to.equal(401);
-    //   expect(httpResponse.body).to.be.a('object');
-    //   expect(httpResponse.body).to.have.property('message');
-    //   expect(httpResponse.body.message).to.equal('Token must be a valid token');
-    // });
-  
-    
+      expect(httpResponse.status).to.equal(401);
+      expect(httpResponse.body).to.be.a('object');
+      expect(httpResponse.body).to.have.property('message');
+      expect(httpResponse.body.message).to.equal('Token must be a valid token');
+    });
+
+    it('Não permite criar um novo jogo com times iguais', async function () {
+      const matchReq = {
+        homeTeam: 16,
+        awayTeam: 16,
+        homeTeamGoals: 2,
+        awayTeamGoals: 2,
+      };
+      const matchRes = {
+        ...matchReq,
+        id: 1,
+        inProgress: true,
+      };
+      const adminToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNjY4MTkxNjI5fQ.mWVGztN-Lsy_l7TrgE2vL2V5dL-f47KXTO-GuzljIT0';
+
+      sinon.stub(Model, 'create').resolves(matchRes as Matches);
+      sinon.stub(jwtAuth, 'verifyToken').resolves();
+
+      const httpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .set('Authorization', `Bearer`)
+        .send(matchReq);
+
+      expect(httpResponse.status).to.equal(422);
+      expect(httpResponse.body).to.be.a('object');
+      expect(httpResponse.body).to.have.property('message');
+      expect(httpResponse.body.message).to.equal(
+        'It is not possible to create a match with two equal teams'
+      );
+    });
+
+    it('Não permite criar um novo jogo com times inexistente', async function () {
+      const matchReq = {
+        homeTeam: 1006,
+        awayTeam: 8000,
+        homeTeamGoals: 2,
+        awayTeamGoals: 2,
+      };
+      const matchRes = {
+        ...matchReq,
+        id: 1,
+        inProgress: true,
+      };
+      const adminToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWls';
+      sinon.stub(Model, 'create').resolves(matchRes as Matches);
+      sinon.stub(jwtAuth, 'verifyToken').resolves();
+
+      const httpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(matchReq);
+
+      expect(httpResponse.status).to.equal(401);
+      expect(httpResponse.body).to.be.a('object');
+      expect(httpResponse.body).to.have.property('message');
+      expect(httpResponse.body.message).to.equal(
+        'There is no team with such id!'
+      );
+    });
   });
 });
