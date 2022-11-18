@@ -13,6 +13,8 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 describe.only('Testes para a rota /matches', function () {
+  const adminToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNjY4MTkxNjI5fQ.mWVGztN-Lsy_l7TrgE2vL2V5dL-f47KXTO-GuzljIT0';
   describe('GET /matches', function () {
     afterEach(() => sinon.restore());
 
@@ -155,9 +157,6 @@ describe.only('Testes para a rota /matches', function () {
         inProgress: true,
       };
 
-      const adminToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNjY4MTkxNjI5fQ.mWVGztN-Lsy_l7TrgE2vL2V5dL-f47KXTO-GuzljIT0';
-
       sinon.stub(Model, 'create').resolves(matchRes as Matches);
       sinon.stub(jwtAuth, 'verifyToken').resolves();
 
@@ -209,8 +208,6 @@ describe.only('Testes para a rota /matches', function () {
         id: 1,
         inProgress: true,
       };
-      const adminToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNjY4MTkxNjI5fQ.mWVGztN-Lsy_l7TrgE2vL2V5dL-f47KXTO-GuzljIT0';
 
       sinon.stub(Model, 'create').resolves(matchRes as Matches);
       sinon.stub(jwtAuth, 'verifyToken').resolves();
@@ -241,8 +238,6 @@ describe.only('Testes para a rota /matches', function () {
         id: 1,
         inProgress: true,
       };
-      const adminToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWls';
       sinon.stub(Model, 'create').resolves(matchRes as Matches);
       sinon.stub(jwtAuth, 'verifyToken').resolves();
 
@@ -259,5 +254,23 @@ describe.only('Testes para a rota /matches', function () {
         'There is no team with such id!'
       );
     });
+  });
+
+  describe('PATCH /matches/:id/finish', function (){
+    it('Permite alterar o status inProgress de uma partida para false no banco de dados', async function () {
+      sinon.stub(Model, 'update').resolves([0] as any);
+      sinon.stub(jwtAuth, 'verifyToken').resolves();
+
+      const httpResponse = await chai
+        .request(app)
+        .patch('/matches/1/finish')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send();
+      
+      expect(httpResponse.status).to.equal(200);
+      expect(httpResponse.body).to.be.a('object');
+      expect(httpResponse.body).to.have.property('updated');
+      expect(httpResponse.body.updated).to.equal('ok');
+    })
   });
 });
