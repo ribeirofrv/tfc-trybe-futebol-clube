@@ -12,8 +12,8 @@ matchesRouter
     matchesController.updateProgress(req, res);
   })
   .get('/matches', (req, res) => matchesController.findAllMatches(req, res))
-  .post('/matches', authentication, (req, res) => {
-    matchesController.createMatch(req, res);
+  .post('/matches', authentication, (req, res, next) => {
+    matchesController.createMatch(req, res, next);
   });
 
 export default matchesRouter;

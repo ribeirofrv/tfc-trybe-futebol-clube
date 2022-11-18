@@ -1,4 +1,4 @@
-import BadRequestError from '../../errors/BadRequestError';
+import NotFoundError from '../../errors/NotFoundError';
 import UnprocessableEntityError from '../../errors/UnprocessableEntityError';
 import { ITeamsToMatch } from '../../interfaces/IMatch';
 import TeamsModel from '../../models/teams.model';
@@ -20,5 +20,5 @@ export default async function validateMatch(match: ITeamsToMatch): Promise<void>
 
   const teamDoesNotExist = !homeTeamExists || !awayTeamExists;
 
-  if (teamDoesNotExist) throw new BadRequestError('There is no team with such id!');
+  if (teamDoesNotExist) throw new NotFoundError('There is no team with such id!');
 }

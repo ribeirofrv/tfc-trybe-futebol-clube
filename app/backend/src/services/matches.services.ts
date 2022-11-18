@@ -26,7 +26,7 @@ export default class MatchesService {
 
   public async createMatch(match: IMatchCreate): Promise<IMatchesDTO | null> {
     const { homeTeam, awayTeam } = match;
-    validateMatch({ homeTeam, awayTeam });
+    await validateMatch({ homeTeam, awayTeam });
     const newMatch = await this._model.create(match);
     return newMatch;
   }

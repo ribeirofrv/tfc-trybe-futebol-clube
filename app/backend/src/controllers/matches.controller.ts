@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import MatchesService from '../services/matches.services';
 
 export default class MatchesController {
@@ -14,10 +14,14 @@ export default class MatchesController {
     response.status(200).json(matches);
   }
 
-  public async createMatch(request: Request, response: Response) {
-    const { body } = request;
-    const newMatch = await this.matchesService.createMatch(body);
-    response.status(201).json(newMatch);
+  public async createMatch(request: Request, response: Response, next: NextFunction) {
+    try {
+      const { body } = request;
+      const newMatch = await this.matchesService.createMatch(body);
+      response.status(201).json(newMatch);
+    } catch (error) {
+      next(error);
+    }
   }
 
   public async updateProgress(request: Request, response: Response) {
