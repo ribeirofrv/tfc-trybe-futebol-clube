@@ -11,6 +11,9 @@ matchesRouter
   .patch('/matches/:id/finish', authentication, (req, res) => {
     matchesController.updateProgress(req, res);
   })
+  .patch('/matches/:id', authentication, (req, res) => {
+    matchesController.updateMatch(req, res);
+  })
   .get('/matches', (req, res) => matchesController.findAllMatches(req, res))
   .post('/matches', authentication, (req, res, next) => {
     matchesController.createMatch(req, res, next);
