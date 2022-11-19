@@ -46,4 +46,15 @@ export default class MatchesModel implements IMatchesModel {
     );
     return updatedMatch ? 'ok' : 'false';
   }
+
+  async updateMatch(id: string, goals: IMatchCreate): Promise<string> {
+    const updatedMatch = await this._model.update(
+      {
+        homeTeamGoals: goals.homeTeamGoals,
+        awayTeamGoals: goals.awayTeamGoals,
+      },
+      { where: { id } },
+    );
+    return updatedMatch ? 'Match updated' : 'Match not updated';
+  }
 }
