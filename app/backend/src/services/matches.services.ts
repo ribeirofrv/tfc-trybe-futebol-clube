@@ -35,4 +35,9 @@ export default class MatchesService {
     const result = await this._model.update(id);
     return result;
   }
+
+  public async updateMatch(id: string, goals: IMatchCreate): Promise<string> {
+    const result = await this._model.updateMatch(id, goals);
+    return result;
+  }
 }
