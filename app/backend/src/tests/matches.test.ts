@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe.only('Testes para a rota /matches', function () {
+describe('Testes para a rota /matches', function () {
   const adminToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwiaWF0IjoxNjY4MTkxNjI5fQ.mWVGztN-Lsy_l7TrgE2vL2V5dL-f47KXTO-GuzljIT0';
   describe('GET /matches', function () {
@@ -271,6 +271,31 @@ describe.only('Testes para a rota /matches', function () {
       expect(httpResponse.body).to.be.a('object');
       expect(httpResponse.body).to.have.property('updated');
       expect(httpResponse.body.updated).to.equal('ok');
+      sinon.restore()
     })
+  });
+
+  describe('PATCH /matches/:id', function () {
+    afterEach(() => sinon.restore());
+    
+    it('Permite alterar o placar de uma partida no banco de dados', async function () {
+      const matchReq = {
+        homeTeamGoals: 2,
+        awayTeamGoals: 6,
+      };
+      sinon.stub(Model, 'update').resolves([0] as any);
+      sinon.stub(jwtAuth, 'verifyToken').resolves();
+
+      const httpResponse = await chai
+        .request(app)
+        .patch('/matches/1')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(matchReq);
+
+      expect(httpResponse.status).to.equal(200);
+      expect(httpResponse.body).to.be.a('object');
+      expect(httpResponse.body).to.have.property('updated');
+      expect(httpResponse.body.updated).to.equal('Match updated');
+    });
   });
 });
