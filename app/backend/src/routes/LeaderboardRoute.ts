@@ -8,6 +8,8 @@ leaderboardRoutes
   .get('/leaderboard/home', (req, res, next) =>
     leaderboardController.getLeaderboardHome(req, res, next))
   .get('/leaderboard/away', (req, res, next) =>
-    leaderboardController.getLeaderboardAway(req, res, next));
+    leaderboardController.getLeaderboardAway(req, res, next))
+  .get('/leaderboard', (req, res, next) =>
+    leaderboardController.getLeaderboardTotal(req, res, next));
 
 export default leaderboardRoutes;

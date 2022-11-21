@@ -12,35 +12,56 @@ export default class LeaderboardService {
   async getLeaderboardHome(): Promise<ITotalOfPoints[]> {
     const allMatches = await this._matchesModel.findAll();
     const homeGames = allMatches?.filter((game) => !game.inProgress);
-    const pointsPerHomeMatch = LeaderboardService
-      .pointsPerHomeMatch(homeGames as IMatchesDTO[]);
-    const countPointsPerMatch = LeaderboardService
-      .countPointsPerMatch(pointsPerHomeMatch as ITotalOfPoints[]);
-    const sortedLeaderboard = LeaderboardService
-      .sortLeaderboard(countPointsPerMatch as ITotalOfPoints[]);
+    const pointsPerHomeMatch = LeaderboardService.pointsPerHomeMatch(
+      homeGames as IMatchesDTO[],
+    );
+    const countPointsPerMatch = LeaderboardService.countPointsPerMatch(
+      pointsPerHomeMatch as ITotalOfPoints[],
+    );
+    const sortedLeaderboard = LeaderboardService.sortLeaderboard(
+      countPointsPerMatch as ITotalOfPoints[],
+    );
     return sortedLeaderboard;
   }
 
   async getLeaderboardAway(): Promise<ITotalOfPoints[]> {
     const allMatches = await this._matchesModel.findAll();
     const awayGames = allMatches?.filter((game) => !game.inProgress);
-    const pointsPerAwayGame = LeaderboardService
-      .pointsPerAwayGame(awayGames as IMatchesDTO[]);
-    const countPointsPerMatch = LeaderboardService
-      .countPointsPerMatch(pointsPerAwayGame as ITotalOfPoints[]);
+    const pointsPerAwayGame = LeaderboardService.pointsPerAwayGame(
+      awayGames as IMatchesDTO[],
+    );
+    const countPointsPerMatch = LeaderboardService.countPointsPerMatch(
+      pointsPerAwayGame as ITotalOfPoints[],
+    );
+    const sortedLeaderboard = LeaderboardService.sortLeaderboard(
+      countPointsPerMatch as ITotalOfPoints[],
+    );
+    return sortedLeaderboard;
+  }
+
+  async getLeaderboardTotal(): Promise<ITotalOfPoints[]> {
+    const allMatches = await this._matchesModel.findAll();
+    const finishMatches = allMatches?.filter((game) => !game.inProgress);
+    const homeGames = LeaderboardService
+      .pointsPerHomeMatch(finishMatches as IMatchesDTO[]);
+    const awayGames = LeaderboardService
+      .pointsPerAwayGame(finishMatches as IMatchesDTO[]);
+    const totalGames = LeaderboardService
+      .countPointsPerMatch([...homeGames, ...awayGames] as ITotalOfPoints[]);
     const sortedLeaderboard = LeaderboardService
-      .sortLeaderboard(countPointsPerMatch as ITotalOfPoints[]);
+      .sortLeaderboard(totalGames as ITotalOfPoints[]);
     return sortedLeaderboard;
   }
 
   static sortLeaderboard(leaderboard: ITotalOfPoints[]) {
-    return leaderboard.sort((first, second) => (
-      second.totalPoints - first.totalPoints
-      || second.totalVictories - first.totalVictories
-      || second.goalsBalance - first.goalsBalance
-      || second.goalsFavor - first.goalsFavor
-      || first.goalsOwn - second.goalsOwn
-    ));
+    return leaderboard.sort(
+      (first, second) =>
+        second.totalPoints - first.totalPoints
+        || second.totalVictories - first.totalVictories
+        || second.goalsBalance - first.goalsBalance
+        || second.goalsFavor - first.goalsFavor
+        || first.goalsOwn - second.goalsOwn,
+    );
   }
 
   static pointsPerHomeMatch(homeGames: IMatchesDTO[]) {
