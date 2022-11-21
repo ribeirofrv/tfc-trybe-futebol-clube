@@ -9,13 +9,26 @@ export default class LeaderboardController {
   }
 
   async getLeaderboardHome(
-    _req: Request,
-    res: Response,
+    _request: Request,
+    response: Response,
     next: NextFunction,
   ): Promise<void> {
     try {
       const leaderboard = await this._leaderboardServices.getLeaderboardHome();
-      res.status(200).json(leaderboard);
+      response.status(200).json(leaderboard);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getLeaderboardAway(
+    _request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const leaderboard = await this._leaderboardServices.getLeaderboardAway();
+      response.status(200).json(leaderboard);
     } catch (error) {
       next(error);
     }

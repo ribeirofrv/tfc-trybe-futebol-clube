@@ -12,22 +12,38 @@ export default class LeaderboardService {
   async getLeaderboardHome(): Promise<ITotalOfPoints[]> {
     const allMatches = await this._matchesModel.findAll();
     const homeGames = allMatches?.filter((game) => !game.inProgress);
-    const pointsPerMatch = LeaderboardService
-      .pointsPerMatch(homeGames as IMatchesDTO[]);
+    const pointsPerHomeMatch = LeaderboardService
+      .pointsPerHomeMatch(homeGames as IMatchesDTO[]);
     const countPointsPerMatch = LeaderboardService
-      .countPointsPerMatch(pointsPerMatch as ITotalOfPoints[]);
+      .countPointsPerMatch(pointsPerHomeMatch as ITotalOfPoints[]);
+    const sortedLeaderboard = LeaderboardService
+      .sortLeaderboard(countPointsPerMatch as ITotalOfPoints[]);
+    return sortedLeaderboard;
+  }
 
-    countPointsPerMatch.sort((first, second) => (
+  async getLeaderboardAway(): Promise<ITotalOfPoints[]> {
+    const allMatches = await this._matchesModel.findAll();
+    const awayGames = allMatches?.filter((game) => !game.inProgress);
+    const pointsPerAwayGame = LeaderboardService
+      .pointsPerAwayGame(awayGames as IMatchesDTO[]);
+    const countPointsPerMatch = LeaderboardService
+      .countPointsPerMatch(pointsPerAwayGame as ITotalOfPoints[]);
+    const sortedLeaderboard = LeaderboardService
+      .sortLeaderboard(countPointsPerMatch as ITotalOfPoints[]);
+    return sortedLeaderboard;
+  }
+
+  static sortLeaderboard(leaderboard: ITotalOfPoints[]) {
+    return leaderboard.sort((first, second) => (
       second.totalPoints - first.totalPoints
       || second.totalVictories - first.totalVictories
       || second.goalsBalance - first.goalsBalance
       || second.goalsFavor - first.goalsFavor
       || first.goalsOwn - second.goalsOwn
     ));
-    return countPointsPerMatch;
   }
 
-  static pointsPerMatch(homeGames: IMatchesDTO[]) {
+  static pointsPerHomeMatch(homeGames: IMatchesDTO[]) {
     return homeGames?.map(({ teamHome, homeTeamGoals, awayTeamGoals }) => {
       let scores = { points: 0, victory: 0, draw: 0, loss: 0 };
       if (homeTeamGoals > awayTeamGoals) { scores = { ...scores, points: 3, victory: 1 }; }
@@ -65,5 +81,25 @@ export default class LeaderboardService {
       }
       return acc;
     }, ratings);
+  }
+
+  static pointsPerAwayGame(awayGames: IMatchesDTO[]) {
+    return awayGames?.map(({ teamAway, homeTeamGoals, awayTeamGoals }) => {
+      let scores = { points: 0, victory: 0, draw: 0, loss: 0 };
+      if (awayTeamGoals > homeTeamGoals) { scores = { ...scores, points: 3, victory: 1 }; }
+      if (awayTeamGoals === homeTeamGoals) { scores = { ...scores, points: 1, draw: 1 }; }
+      if (awayTeamGoals < homeTeamGoals) scores = { ...scores, loss: 1 };
+      return {
+        name: teamAway.teamName,
+        totalPoints: scores.points,
+        totalVictories: scores.victory,
+        totalDraws: scores.draw,
+        totalLosses: scores.loss,
+        goalsFavor: awayTeamGoals,
+        goalsOwn: homeTeamGoals,
+        goalsBalance: 0,
+        efficiency: '0.0',
+      };
+    });
   }
 }
