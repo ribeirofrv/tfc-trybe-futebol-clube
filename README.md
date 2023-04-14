@@ -30,8 +30,7 @@ Para executar o projeto em sua máquina, siga os passos abaixo:
   ```
   npm run compose:up
   ```
-
-  - Esses serviços irão inicializar um container chamado `app-frontend-1` , `app_backend` e outro chamado `db`;
+>Esses serviços irão inicializar um container chamado `app-frontend-1` , `app_backend` e outro chamado `db`;
 3. Abra terminal interativo do container criado pelo compose
   ```
   docker exec -it app_backend bash
